@@ -50,9 +50,9 @@ Aplikasi berbasis web untuk membantu proses penilaian dan pemeringkatan dosen te
 
 ## 🖼️ Screenshot Aplikasi
 
-| Halaman Utama | Grafik Radar | Perbandingan SAW-TOPSIS |
-|---------------|--------------|--------------------------|
-| ![](Asset/Preview1.png) | ![](Asset/Preview2.png) | ![](Asset/Preview3.png) |
+![Halaman Utama](Asset/Preview1.png)
+![Grafik Radar](Asset/Preview2.png)
+![Perbandingan SAW-TOPSIS](Asset/Preview3.png)
 
 ---
 
