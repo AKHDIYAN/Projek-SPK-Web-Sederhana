@@ -50,11 +50,9 @@ Aplikasi berbasis web untuk membantu proses penilaian dan pemeringkatan dosen te
 
 ## 🖼️ Screenshot Aplikasi
 
-
-
-![Preview Aplikasi](./Asset/Preview1.png)
-![Grafik Radar](./Asset/Preview2.png)
-![Perbandingan SAW-TOPSIS](./Asset/Preview3.png)
+![Preview Aplikasi](https://github.com/AKHDIYAN/Projek-SPK-Web-Sederhana/blob/main/Asset/Preview1.png?raw=true)
+![Grafik Radar](https://github.com/AKHDIYAN/Projek-SPK-Web-Sederhana/blob/main/Asset/Preview2.png?raw=true)
+![Perbandingan SAW-TOPSIS](https://github.com/AKHDIYAN/Projek-SPK-Web-Sederhana/blob/main/Asset/Preview3.png?raw=true)
 
 ---
 
