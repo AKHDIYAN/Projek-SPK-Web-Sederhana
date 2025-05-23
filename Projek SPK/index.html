@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SPK Pemilihan Dosen Terbaik</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/tippy.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/tippy.umd.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Sistem Pendukung Keputusan Pemilihan Dosen Terbaik</h1>
+
+    <!-- Informasi Metode -->
+    <section class="info-section">
+      <h2>Informasi Metode</h2>
+      <div class="info-content">
+        <p>Sistem ini menggunakan dua metode SPK:</p>
+        <ul>
+          <li>
+            <strong>SAW</strong> - Simple Additive Weighting
+            <span class="info-icon" data-tippy-content="Metode SAW melakukan penjumlahan terbobot dari rating kinerja pada setiap alternatif. Cocok untuk masalah MCDM (Multi-Criteria Decision Making) yang sederhana.">ⓘ</span>
+          </li>
+          <li>
+            <strong>TOPSIS</strong> - Technique for Order Preference by Similarity to Ideal Solution
+            <span class="info-icon" data-tippy-content="Metode TOPSIS mengidentifikasi solusi dari satu set alternatif berdasarkan pada konsep alternatif terpilih yang terbaik, dengan jarak terpendek dari solusi ideal positif dan jarak terjauh dari solusi ideal negatif.">ⓘ</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Pengaturan Bobot -->
+    <section>
+      <h2>Pengaturan Bobot Kriteria</h2>
+      <form id="weightForm" class="weight-form">
+        <div class="weight-item">
+          <label>Publikasi:</label>
+          <input type="number" id="weightPub" value="25" min="0" max="100" step="5" required>
+          <span class="percent">%</span>
+          <span class="info-icon" data-tippy-content="Bobot untuk publikasi ilmiah dosen (jurnal, konferensi, dll)">ⓘ</span>
+        </div>
+        <div class="weight-item">
+          <label>HKI:</label>
+          <input type="number" id="weightHki" value="15" min="0" max="100" step="5" required>
+          <span class="percent">%</span>
+          <span class="info-icon" data-tippy-content="Bobot untuk Hak Kekayaan Intelektual (paten, hak cipta, dll)">ⓘ</span>
+        </div>
+        <div class="weight-item">
+          <label>Buku:</label>
+          <input type="number" id="weightBook" value="15" min="0" max="100" step="5" required>
+          <span class="percent">%</span>
+          <span class="info-icon" data-tippy-content="Bobot untuk publikasi buku, baik sebagai penulis utama maupun kontributor">ⓘ</span>
+        </div>
+        <div class="weight-item">
+          <label>Penelitian:</label>
+          <input type="number" id="weightResearch" value="25" min="0" max="100" step="5" required>
+          <span class="percent">%</span>
+          <span class="info-icon" data-tippy-content="Bobot untuk kegiatan penelitian dan hibah penelitian yang diterima">ⓘ</span>
+        </div>
+        <div class="weight-item">
+          <label>Pengabdian:</label>
+          <input type="number" id="weightCommunity" value="20" min="0" max="100" step="5" required>
+          <span class="percent">%</span>
+          <span class="info-icon" data-tippy-content="Bobot untuk kegiatan pengabdian kepada masyarakat">ⓘ</span>
+        </div>
+        <div class="weight-button">
+          <button type="submit" class="weight-btn">Terapkan Bobot</button>
+          <button type="button" id="saveWeights" class="save-btn">Simpan Konfigurasi</button>
+          <button type="button" id="loadWeights" class="load-btn">Muat Konfigurasi</button>
+        </div>
+      </form>
+      <div class="total-weight">Total Bobot: <span id="totalWeight">100</span>%</div>
+    </section>
+
+    <!-- Input Manual -->
+    <section>
+      <h2>Input Manual Data Dosen</h2>
+      <form id="manualForm">
+        <input type="text" id="nama" placeholder="Nama Dosen" required />
+        <input type="text" id="nidn" placeholder="NIDN" required />
+        <input type="text" id="fakultas" placeholder="Fakultas" required />
+        <input type="number" id="pub" placeholder="Score Publication" min="0" step="0.01" required />
+        <input type="number" id="hki" placeholder="Score HKI" min="0" step="0.01" required />
+        <input type="number" id="book" placeholder="Score Book" min="0" step="0.01" required />
+        <input type="number" id="research" placeholder="Score Research" min="0" step="0.01" required />
+        <input type="number" id="community" placeholder="Score Community Service" min="0" step="0.01" required />
+        <button type="submit">Tambah Data</button>
+      </form>
+    </section>
+
+    <!-- Upload File -->
+    <section>
+      <h2>Upload File Dataset</h2>
+      <div class="file-upload">
+        <input type="file" id="fileInput" accept=".csv, .xlsx, .xls" />
+        <small>Format header: Nama Dosen, NIDN, Fakultas, Score Publication, Score HKI, Score Book, Score Research, Score Community Service</small>
+        <div class="file-info">
+          <p><strong>Catatan:</strong> Jika kolom "Score Research" dan "Score Community Service" tidak tersedia, sistem akan menggunakan nilai default 0.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hasil dan Visualisasi -->
+    <section>
+      <h2>Hasil Ranking</h2>
+      <div class="action-buttons">
+        <button id="resetData" class="reset-btn">Reset Semua Data</button>
+        <button id="exportBtn" class="export-btn">Export ke CSV</button>
+        <button id="compareBtn" class="compare-btn">Bandingkan Metode</button>
+      </div>
+      
+      <!-- Filter & Search -->
+      <div class="filter-search">
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="Cari nama atau NIDN..." />
+          <button id="searchBtn">Cari</button>
+        </div>
+        <div class="filter-box">
+          <select id="fakultasFilter">
+            <option value="">Semua Fakultas</option>
+          </select>
+          <button id="applyFilter">Terapkan Filter</button>
+          <button id="resetFilter">Reset Filter</button>
+        </div>
+      </div>
+      
+      <!-- Pagination -->
+      <div class="pagination-controls">
+        <select id="rowsPerPage">
+          <option value="5">5 per halaman</option>
+          <option value="10" selected>10 per halaman</option>
+          <option value="25">25 per halaman</option>
+          <option value="50">50 per halaman</option>
+        </select>
+        <div class="pagination">
+          <button id="prevPage" disabled>&laquo; Sebelumnya</button>
+          <span id="pageInfo">Halaman 1 dari 1</span>
+          <button id="nextPage" disabled>Berikutnya &raquo;</button>
+        </div>
+      </div>
+      
+      <div id="hasil"><p>Belum ada data untuk ditampilkan. Silakan tambahkan data atau unggah file.</p></div>
+      
+      <div class="chart-container">
+        <h3>Visualisasi Hasil</h3>
+        <div class="chart-tabs">
+          <button class="chart-tab active" data-chart="bar">Bar Chart</button>
+          <button class="chart-tab" data-chart="radar">Radar Chart</button>
+          <button class="chart-tab" data-chart="comparison">Perbandingan SAW vs TOPSIS</button>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="resultChart"></canvas>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Modal untuk Perbandingan Metode -->
+    <div id="comparisonModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Perbandingan Metode SAW dan TOPSIS</h3>
+        <div id="comparisonResult"></div>
+      </div>
+    </div>
+    
+    <!-- Modal untuk Konfigurasi Bobot -->
+    <div id="configModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3 id="configTitle">Simpan Konfigurasi Bobot</h3>
+        <div id="configForm">
+          <input type="text" id="configName" placeholder="Nama konfigurasi" />
+          <div id="savedConfigs"></div>
+          <div class="modal-buttons">
+            <button id="confirmSaveConfig">Simpan</button>
+            <button id="confirmLoadConfig">Muat</button>
+            <button id="deleteConfig">Hapus</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
