@@ -52,7 +52,7 @@ Aplikasi berbasis web untuk membantu proses penilaian dan pemeringkatan dosen te
 
 | Halaman Utama | Grafik Radar | Perbandingan SAW-TOPSIS |
 |---------------|--------------|--------------------------|
-| ![](assets/preview1.png) | ![](assets/preview2.png) | ![](assets/preview3.png) |
+| ![](Asset/Preview1.png) | ![](Asset/Preview2.png) | ![](Asset/Preview3.png) |
 
 ---
 
